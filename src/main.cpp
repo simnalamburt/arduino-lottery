@@ -24,7 +24,8 @@ namespace {
   decltype(HIGH) blinkstates[length(LEDs)] = {};
   Timer blinktimer;
 
-  int dice_result;
+  constexpr decltype(random(0)) dice_upperbound = 6;
+  decltype(random(0)) dice_result;
 
   // Roll dice
   void roll() {
@@ -34,12 +35,9 @@ namespace {
 
   // Stop dice
   void stop() {
-    dice_result = random(10);
+    dice_result = random(dice_upperbound);
     timer.second(5);
     mode = Mode::Number;
-
-    // TODO: Remove
-    Serial.println(dice_result + 1);
   }
 }
 
@@ -78,17 +76,13 @@ void loop() {
     if (timer.stopped()) { stop(); }
     break;
   case Mode::Number: {
-    constexpr decltype(HIGH) matrix[10][length(LEDs)] = {
-      { HIGH, LOW,  LOW,  LOW,  LOW,  LOW,  LOW,  LOW,  LOW,  LOW,  LOW,  LOW },
-      { HIGH, HIGH, LOW,  LOW,  LOW,  LOW,  LOW,  LOW,  LOW,  LOW,  LOW,  LOW },
+    constexpr decltype(HIGH) matrix[dice_upperbound][length(LEDs)] = {
+      { LOW,  HIGH, LOW,  LOW,  LOW,  LOW,  LOW,  LOW,  LOW,  LOW,  LOW,  LOW },
       { HIGH, HIGH, HIGH, LOW,  LOW,  LOW,  LOW,  LOW,  LOW,  LOW,  LOW,  LOW },
-      { HIGH, HIGH, HIGH, HIGH, LOW,  LOW,  LOW,  LOW,  LOW,  LOW,  LOW,  LOW },
-      { HIGH, HIGH, HIGH, HIGH, HIGH, LOW,  LOW,  LOW,  LOW,  LOW,  LOW,  LOW },
-      { HIGH, HIGH, HIGH, HIGH, HIGH, HIGH, LOW,  LOW,  LOW,  LOW,  LOW,  LOW },
-      { HIGH, HIGH, HIGH, HIGH, HIGH, HIGH, HIGH, LOW,  LOW,  LOW,  LOW,  LOW },
-      { HIGH, HIGH, HIGH, HIGH, HIGH, HIGH, HIGH, HIGH, LOW,  LOW,  LOW,  LOW },
-      { HIGH, HIGH, HIGH, HIGH, HIGH, HIGH, HIGH, HIGH, HIGH, LOW,  LOW,  LOW },
-      { HIGH, HIGH, HIGH, HIGH, HIGH, HIGH, HIGH, HIGH, HIGH, HIGH, LOW,  LOW },
+      { HIGH, HIGH, HIGH, HIGH, LOW,  LOW,  LOW,  LOW,  LOW,  LOW,  LOW,  HIGH },
+      { HIGH, HIGH, HIGH, HIGH, HIGH, LOW,  LOW,  LOW,  LOW,  LOW,  HIGH, HIGH },
+      { HIGH, HIGH, HIGH, HIGH, HIGH, HIGH, LOW,  HIGH, LOW,  HIGH, HIGH, HIGH },
+      { HIGH, HIGH, HIGH, HIGH, HIGH, HIGH, HIGH, HIGH, HIGH, HIGH, HIGH, HIGH },
     };
 
     const auto *dice = matrix[dice_result];
