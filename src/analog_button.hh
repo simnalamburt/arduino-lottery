@@ -6,7 +6,7 @@
 //
 template<uint8_t pin>
 class AnalogButton {
-  bool last_state = false;
+  bool _last_state = false;
   bool _clicked = false;
 
 public:
@@ -26,14 +26,16 @@ public:
       return voltage;
     }
 
-    _clicked = !last_state && current_state;
+    _clicked = !_last_state && current_state;
 
     // Update state
-    last_state = current_state;
+    _last_state = current_state;
     return voltage;
   }
 
   // Returns `true` if given analog button was clicked at the last `onLoop()`
   // call. On otherwhise, returns `false`.
   bool clicked() const { return _clicked; }
+
+  bool last_state() const { return _last_state; }
 };

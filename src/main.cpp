@@ -9,7 +9,7 @@ using util::range;
 
 namespace {
   // Input hardwares
-  Potentiometer<A0> meter; // TODO: Use it
+  Potentiometer<A0> meter;
   AnalogButton<A1> left;
   AnalogButton<A2> right;
 
@@ -39,6 +39,16 @@ namespace {
     timer.second(5);
     mode = Mode::Number;
   }
+
+  // 문제 1번 답안
+  void logic() {
+    const auto l = left.last_state(),
+               r = right.last_state();
+
+    for (const auto i: range(0u, length(LEDs))) {
+      digitalWrite(LEDs[i], (i%2 ? l||r : l&&r) ? HIGH : LOW);
+    }
+  }
 }
 
 void setup() {
@@ -54,6 +64,11 @@ void loop() {
   blinktimer.onLoop();
   left.onLoop();
   right.onLoop();
+
+
+  // 포텐시오미터가 한쪽 끝으로 꺾여있을경우, 다른 과제 프로그램으로 변신함
+  const auto val = meter.get();
+  if (0.9 < val) { return logic(); }
 
 
   // Left button rolls the dice
