@@ -5,6 +5,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - run: python3 -m pip install -U pip setuptools wheel
-    - run: python3 -m pip install -r requirements.txt
-    - run: python3 -m platformio run
+    - run: |
+        python3 -m venv .venv
+        . .venv/bin/activate
+        pip install -U pip
+        pip install -U setuptools wheel
+    - run: |
+        . .venv/bin/activate
+        pip install -r requirements.txt
+    - run: |
+        . .venv/bin/activate
+        pio run
